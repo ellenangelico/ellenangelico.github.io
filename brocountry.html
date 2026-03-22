@@ -59,8 +59,8 @@
 <body>
     <h1>The Bro Country Game</h1>
 
-    <p>The Bro Country Game is a phone-based, audience participation party game where players compete to write the funniest lyrics.</p>
-    <p>Currently, I am hosting "Beta Testing Happy Hours" at Vinyl Tap in East Nashville. Folks can help test the game, hang out, grab a drink, and shape the final product with their feedback. No experience necessary, just a sense of humor and a willingness to have a good time.</p>
+    <p>The Bro Country Game is a phone-based party game where players compete to write the funniest lyrics.</p>
+    <p>I am hosting "Beta Testing Happy Hours" at Vinyl Tap in East Nashville. Folks can hang out, grab a drink, and shape the final product with their feedback. No experience necessary, just a sense of humor and a willingness to have a good time.</p>
 
     <div class="next-night">
         <strong>The next Bro Country night will be:</strong>
@@ -71,7 +71,7 @@
     </div>
 
     <div class="signup">
-        <p>If you would like to receive an email about future Bro Country Nights, please enter your email here:</p>
+        <p>To stay in the loop about future Bro Country nights, please enter your email here:</p>
         <form id="email-form" onsubmit="submitEmail(event)">
             <input type="email" id="email-input" placeholder="your@email.com" required>
             <button type="submit">Sign Up</button>
@@ -98,7 +98,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: email })
             }).then(function() {
-                message.textContent = "You're on the list! See you at Vinyl Tap.";
+                message.textContent = "You're on the list!";
                 document.getElementById("email-input").value = "";
                 button.disabled = false;
                 button.textContent = "Sign Up";

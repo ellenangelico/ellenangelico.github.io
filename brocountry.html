@@ -1,2 +1,113 @@
-<meta http-equiv="refresh" content="0; url=https://docs.google.com/forms/d/e/1FAIpQLScU4kj4B3AyW-UAQL5NySf6drHjbHzi7lPBFP6rQyZ-PHOc4A/viewform?usp=dialog">
-<p><a href="https://docs.google.com/forms/d/e/1FAIpQLScU4kj4B3AyW-UAQL5NySf6drHjbHzi7lPBFP6rQyZ-PHOc4A/viewform?usp=dialog">Redirect</a></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Bro Country Game</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+        }
+        .next-night {
+            background: #f5f5f5;
+            padding: 20px;
+            border-left: 4px solid #c8a415;
+            margin: 30px 0;
+        }
+        .next-night p {
+            margin: 4px 0;
+        }
+        .signup {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .signup form {
+            margin-top: 10px;
+        }
+        .signup input[type="email"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            width: 250px;
+            max-width: 100%;
+        }
+        .signup button {
+            background: #c8a415;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .signup button:hover {
+            background: #a8890f;
+        }
+        #signup-message {
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Bro Country Game</h1>
+
+    <p>The Bro Country Game is a phone-based, audience participation party game where players compete to write the funniest lyrics.</p>
+    <p>Currently, I am hosting "Beta Testing Happy Hours" at Vinyl Tap in East Nashville. Folks can help test the game, hang out, grab a drink, and shape the final product with their feedback. No experience necessary, just a sense of humor and a willingness to have a good time.</p>
+
+    <div class="next-night">
+        <strong>The next Bro Country night will be:</strong>
+        <p>Wednesday, March 25</p>
+        <p>6:00pm–7:30pm</p>
+        <p>Vinyl Tap</p>
+        <p>2038 Greenwood Ave, Nashville, TN 37206</p>
+    </div>
+
+    <div class="signup">
+        <p>If you would like to receive an email about future Bro Country Nights, please enter your email here:</p>
+        <form id="email-form" onsubmit="submitEmail(event)">
+            <input type="email" id="email-input" placeholder="your@email.com" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p id="signup-message"></p>
+    </div>
+
+    <script>
+        // Replace this URL with your Google Apps Script web app URL
+        var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXJzFL4Z6bpSTZfrR6tfXe1wE8aZ_xpXkh7DRj3r0iHqxRSz8coOjjhB-NarbmYh-Ltg/exec";
+
+        function submitEmail(e) {
+            e.preventDefault();
+            var email = document.getElementById("email-input").value;
+            var message = document.getElementById("signup-message");
+            var button = document.querySelector(".signup button");
+
+            button.disabled = true;
+            button.textContent = "Sending...";
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email })
+            }).then(function() {
+                message.textContent = "You're on the list! See you at Vinyl Tap.";
+                document.getElementById("email-input").value = "";
+                button.disabled = false;
+                button.textContent = "Sign Up";
+            }).catch(function() {
+                message.textContent = "Something went wrong. Please try again.";
+                button.disabled = false;
+                button.textContent = "Sign Up";
+            });
+        }
+    </script>
+</body>
+</html>

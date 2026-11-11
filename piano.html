@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piano</title>
+<style>
+:root{--bg:#f6f6f4;--panel:#fff;--line:#d9d9d4}
+@media (prefers-color-scheme: dark){:root{--bg:#18181a;--panel:#232326;--line:#3a3a3e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1150px;margin:0 auto;padding:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+#pianoWrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#222;padding:6px 6px 2px}
+#piano{position:relative;height:120px}
+.wk,.bk{position:absolute;top:0;cursor:pointer;border-radius:0 0 4px 4px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.wk{width:24px;height:118px;background:#fafaf7;border:1px solid #888;z-index:1}
+.bk{width:15px;height:72px;background:#1b1b1b;z-index:2;border:1px solid #000}
+.wk span{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:9px;color:#555;line-height:1}
+.wk span.c{font-weight:800;color:#222}
+.wk:hover{background:#e6eefa}.bk:hover{background:#445}
+.wk.down{background:#cfdcef}.bk.down{background:#556}
+</style>
+</head>
+<body>
+<main>
+  <div class="panel"><div id="pianoWrap"><div id="piano"></div></div></div>
+</main>
+<script>
+(function(){
+'use strict';
+const NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLATS = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const name = (m, flat) => (flat ? FLATS : NAMES)[m % 12] + (Math.floor(m / 12) - 1);
+const freq = m => 440 * Math.pow(2, (m - 69) / 12);
+
+let audio = null;
+function play(m){
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === 'suspended') audio.resume();
+    const t = audio.currentTime, f = freq(m);
+    const g = audio.createGain(); g.connect(audio.destination);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+    [1,2,3].forEach((h,i) => { const o = audio.createOscillator(); o.type = i ? 'sine' : 'triangle'; o.frequency.value = f * h;
+      const gg = audio.createGain(); gg.gain.value = [1,.35,.15][i]; o.connect(gg); gg.connect(g); o.start(t); o.stop(t + 1.5); });
+  } catch(e){}
+}
+
+const p = document.getElementById('piano'); let x = 0;
+for (let m = 21; m <= 108; m++) {
+  const pc = m % 12, black = [1,3,6,8,10].includes(pc);
+  const k = document.createElement('div');
+  k.className = black ? 'bk' : 'wk'; k.dataset.m = m;
+  k.title = name(m) + (black ? ' / ' + name(m, true) : '');
+  if (black) k.style.left = (x - 8) + 'px';
+  else { k.style.left = x + 'px'; k.innerHTML = `<span class="${pc === 0 ? 'c' : ''}">${name(m)}</span>`; x += 24; }
+  k.addEventListener('pointerdown', ev => { ev.preventDefault(); play(m); k.classList.add('down'); setTimeout(() => k.classList.remove('down'), 180); });
+  p.appendChild(k);
+}
+p.style.width = x + 'px';
+// start centered on middle C
+const w = document.getElementById('pianoWrap'), c4 = p.querySelector('[data-m="60"]');
+w.scrollLeft = Math.max(0, parseFloat(c4.style.left) - w.clientWidth / 2);
+})();
+</script>
+</body>
+</html>
